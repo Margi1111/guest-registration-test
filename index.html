@@ -58,6 +58,7 @@
     <hr style="margin: 18px 0;" />
 
     <form id="guestForm">
+      <!-- Hidden fields from link -->
       <input type="hidden" name="reservationId" id="reservationIdInput" />
       <input type="hidden" name="aptName" id="aptNameInput" />
       <input type="hidden" name="guestName" id="guestNameInput" />
@@ -65,49 +66,39 @@
       <input type="hidden" name="checkin" id="checkinInput" />
       <input type="hidden" name="checkout" id="checkoutInput" />
 
-     <label>First name *</label>
-     <input id="firstNameInputVisible" name="firstName" required />
+      <label for="firstNameInputVisible">First name *</label>
+      <input id="firstNameInputVisible" name="firstName" required />
 
-     <label>Last name *</label>
-     <input id="lastNameInputVisible" name="lastName" required />
+      <label for="lastNameInputVisible">Last name *</label>
+      <input id="lastNameInputVisible" name="lastName" required />
 
-      <label>Date of birth *</label>
-      <input type="date" name="birthDate" required />
+      <label for="birthDateInput">Date of birth *</label>
+      <input id="birthDateInput" type="date" name="birthDate" required />
 
-     <label>Nationality *</label>
-     <select id="nationalitySelect" name="nationalityName" required>
-      <option value="">Select Country</option>
+      <label for="nationalitySelect">Nationality *</label>
+      <select id="nationalitySelect" name="nationalityName" required>
+        <option value="">Select Country</option>
+      </select>
+      <input type="hidden" id="nationalityCodeInput" name="nationalityCode" />
 
-  <!-- You can paste your full country list here -->
-  <option value="Bulgaria" data-country-code="BG">Bulgaria</option>
-  <option value="Poland" data-country-code="PL">Poland</option>
-  <option value="Turkey" data-country-code="TR">Turkey</option>
-  <option value="Germany" data-country-code="DE">Germany</option>
-  <option value="United Kingdom" data-country-code="GB">United Kingdom</option>
-  <option value="United States" data-country-code="US">United States</option>
-</select>
+      <label for="documentNumberInput">ID / Passport number *</label>
+      <input id="documentNumberInput" name="documentNumber" required />
 
-<!-- Hidden field that will be submitted -->
-<input type="hidden" id="nationalityCodeInput" name="nationalityCode" />
-
-      <label>ID / Passport number *</label>
-      <input name="documentNumber" required />
-
-      <label>Document type *</label>
-      <select name="documentType" required>
+      <label for="documentTypeSelect">Document type *</label>
+      <select id="documentTypeSelect" name="documentType" required>
         <option value="">Select...</option>
         <option value="ID">ID card</option>
         <option value="PASSPORT">Passport</option>
       </select>
 
-      <label>Document issue country *</label>
-      <input name="documentCountry" required />
+      <label for="documentCountryInput">Document issue country *</label>
+      <input id="documentCountryInput" name="documentCountry" required />
 
-      <label>Email</label>
-      <input type="email" name="email" />
+      <label for="emailInput">Email</label>
+      <input id="emailInput" type="email" name="email" />
 
-      <label>Phone</label>
-      <input name="phone" />
+      <label for="phoneInput">Phone</label>
+      <input id="phoneInput" name="phone" />
 
       <label style="display:flex; gap:8px; align-items:flex-start;">
         <input type="checkbox" name="consent" required style="width:auto; margin-top:3px;" />
@@ -117,82 +108,111 @@
       <button type="submit">Submit registration</button>
     </form>
 
-    <p class="small">Test mode: submit only shows an alert + browser console output.</p>
+    <p class="small">Test mode: submit shows alert + browser console output.</p>
   </div>
 
- <script>
-  const p = new URLSearchParams(window.location.search);
+  <script>
+    const countries = [
+      { name: "Australia", code: "AU" }, { name: "Austria", code: "AT" }, { name: "Belgium", code: "BE" },
+      { name: "Bulgaria", code: "BG" }, { name: "Canada", code: "CA" }, { name: "China", code: "CN" },
+      { name: "Croatia", code: "HR" }, { name: "Cyprus", code: "CY" }, { name: "Czech Republic", code: "CZ" },
+      { name: "Denmark", code: "DK" }, { name: "Estonia", code: "EE" }, { name: "Finland", code: "FI" },
+      { name: "France", code: "FR" }, { name: "Germany", code: "DE" }, { name: "Greece", code: "GR" },
+      { name: "Hungary", code: "HU" }, { name: "Ireland", code: "IE" }, { name: "Israel", code: "IL" },
+      { name: "Italy", code: "IT" }, { name: "Japan", code: "JP" }, { name: "Latvia", code: "LV" },
+      { name: "Lithuania", code: "LT" }, { name: "Netherlands", code: "NL" }, { name: "Norway", code: "NO" },
+      { name: "Poland", code: "PL" }, { name: "Portugal", code: "PT" }, { name: "Romania", code: "RO" },
+      { name: "Serbia", code: "RS" }, { name: "Slovakia", code: "SK" }, { name: "Slovenia", code: "SI" },
+      { name: "Spain", code: "ES" }, { name: "Sweden", code: "SE" }, { name: "Switzerland", code: "CH" },
+      { name: "Turkey", code: "TR" }, { name: "Ukraine", code: "UA" }, { name: "United Kingdom", code: "GB" },
+      { name: "United States", code: "US" }
+    ];
 
-  const aptName = p.get("aptName") || "";
-  const guestName = p.get("guestName") || "";
-  const guestLastName = p.get("guestLastName") || "";
-  const reservationId = p.get("reservationId") || "";
+    function fillCountrySelect() {
+      const select = document.getElementById("nationalitySelect");
+      countries.forEach((c) => {
+        const opt = document.createElement("option");
+        opt.value = c.name;
+        opt.textContent = c.name;
+        opt.dataset.countryCode = c.code;
+        select.appendChild(opt);
+      });
+    }
 
-  const rawCheckin = p.get("checkin") || "";   // e.g. "Friday, September 18"
-  const rawCheckout = p.get("checkout") || ""; // e.g. "Wednesday, September 23"
+    function syncNationalityCode() {
+      const select = document.getElementById("nationalitySelect");
+      const selected = select.options[select.selectedIndex];
+      const code = selected ? (selected.dataset.countryCode || "") : "";
+      document.getElementById("nationalityCodeInput").value = code;
+    }
 
-  function toIsoWithCurrentYear(raw) {
-    if (!raw) return "";
+    function toIsoWithCurrentYear(raw) {
+      if (!raw) return "";
+      const parts = raw.split(", ");
+      if (parts.length < 2) return raw; // fallback if unknown format
 
-    // Expected input: "Weekday, Month Day"
-    const parts = raw.split(", ");
-    if (parts.length < 2) return raw; // fallback if unexpected format
+      const monthDay = parts[1].trim(); // e.g. "September 18"
+      const [monthName, dayStr] = monthDay.split(" ");
+      const day = parseInt(dayStr, 10);
 
-    const monthDay = parts[1].trim(); // "September 18"
-    const [monthName, dayStr] = monthDay.split(" ");
-    const day = parseInt(dayStr, 10);
+      const monthMap = {
+        January: 1, February: 2, March: 3, April: 4, May: 5, June: 6,
+        July: 7, August: 8, September: 9, October: 10, November: 11, December: 12
+      };
 
-    const monthMap = {
-      January: 1, February: 2, March: 3, April: 4, May: 5, June: 6,
-      July: 7, August: 8, September: 9, October: 10, November: 11, December: 12
-    };
+      const month = monthMap[monthName];
+      if (!month || Number.isNaN(day)) return raw;
 
-    const month = monthMap[monthName];
-    if (!month || Number.isNaN(day)) return raw; // fallback
+      const year = new Date().getFullYear();
+      const mm = String(month).padStart(2, "0");
+      const dd = String(day).padStart(2, "0");
+      return `${year}-${mm}-${dd}`;
+    }
 
-    const year = new Date().getFullYear();
-    const mm = String(month).padStart(2, "0");
-    const dd = String(day).padStart(2, "0");
+    // Read URL params
+    const p = new URLSearchParams(window.location.search);
+    const aptName = p.get("aptName") || "";
+    const guestName = p.get("guestName") || "";
+    const guestLastName = p.get("guestLastName") || "";
+    const reservationId = p.get("reservationId") || "";
+    const checkin = toIsoWithCurrentYear(p.get("checkin") || "");
+    const checkout = toIsoWithCurrentYear(p.get("checkout") || "");
 
-    return `${year}-${mm}-${dd}`;
-  }
+    const fullName = [guestName, guestLastName].filter(Boolean).join(" ") || "Guest";
 
-  // Converted values (YYYY-MM-DD)
-  const checkin = toIsoWithCurrentYear(rawCheckin);
-  const checkout = toIsoWithCurrentYear(rawCheckout);
+    // Top section
+    document.getElementById("hello").textContent = "Hello, " + fullName;
+    document.getElementById("aptNameValue").textContent = aptName || "-";
+    document.getElementById("guestValue").textContent = fullName || "-";
+    document.getElementById("checkinValue").textContent = checkin || "-";
+    document.getElementById("checkoutValue").textContent = checkout || "-";
+    document.getElementById("reservationValue").textContent = reservationId || "-";
 
-  const fullName = [guestName, guestLastName].filter(Boolean).join(" ") || "Guest";
+    // Hidden fields
+    document.getElementById("reservationIdInput").value = reservationId;
+    document.getElementById("aptNameInput").value = aptName;
+    document.getElementById("guestNameInput").value = guestName;
+    document.getElementById("guestLastNameInput").value = guestLastName;
+    document.getElementById("checkinInput").value = checkin;
+    document.getElementById("checkoutInput").value = checkout;
 
-  document.getElementById("hello").textContent = "Hello, " + fullName;
-  document.getElementById("aptNameValue").textContent = aptName || "-";
-  document.getElementById("guestValue").textContent = fullName || "-";
-  document.getElementById("checkinValue").textContent = checkin || "-";
-  document.getElementById("checkoutValue").textContent = checkout || "-";
-  document.getElementById("reservationValue").textContent = reservationId || "-";
+    // Auto-fill visible name fields
+    document.getElementById("firstNameInputVisible").value = guestName;
+    document.getElementById("lastNameInputVisible").value = guestLastName;
 
-  // hidden fields (sent later to Google Script)
-  document.getElementById("reservationIdInput").value = reservationId;
-  document.getElementById("aptNameInput").value = aptName;
-  document.getElementById("firstNameInputVisible").value = guestName;
-  document.getElementById("lastNameInputVisible").value = guestLastName;
-  document.getElementById("checkinInput").value = checkin;
-  document.getElementById("checkoutInput").value = checkout;
+    // Countries dropdown init
+    fillCountrySelect();
+    document.getElementById("nationalitySelect").addEventListener("change", syncNationalityCode);
+    syncNationalityCode();
 
-  document.getElementById("guestForm").addEventListener("submit", function (e) {
-    e.preventDefault();
-    const data = Object.fromEntries(new FormData(this).entries());
-    console.log("FORM DATA:", data);
-    alert("Test submit OK. Next step: send this data to Google Apps Script.");
-  });
-  function syncNationalityCode() {
-  const select = document.getElementById("nationalitySelect");
-  const selected = select.options[select.selectedIndex];
-  const code = selected ? (selected.dataset.countryCode || "") : "";
-  document.getElementById("nationalityCodeInput").value = code;
-}
-
-document.getElementById("nationalitySelect").addEventListener("change", syncNationalityCode);
-syncNationalityCode(); // run once on load
-</script>
+    // Test submit
+    document.getElementById("guestForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      syncNationalityCode();
+      const data = Object.fromEntries(new FormData(this).entries());
+      console.log("FORM DATA:", data);
+      alert("Test submit OK. nationalityCode = " + (data.nationalityCode || ""));
+    });
+  </script>
 </body>
 </html>
