@@ -6,29 +6,45 @@
   <title>Terms and Conditions</title>
   <style>
     body {
-      font-family: "Segoe UI", system-ui, sans-serif;
       margin: 0;
+      font-family: "Segoe UI", system-ui, sans-serif;
       background: #f6f8fc;
       color: #1f2937;
     }
     .wrap {
-      max-width: 900px;
-      margin: 30px auto;
-      background: #fff;
+      max-width: 920px;
+      margin: 28px auto;
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
       border-radius: 14px;
-      box-shadow: 0 10px 28px rgba(0,0,0,0.08);
-      padding: 28px;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
+      padding: 26px;
     }
-    h1 { margin-top: 0; color: #0f172a; }
-    h2 { margin-top: 24px; color: #1d4ed8; }
-    p, li { line-height: 1.55; }
-    .footer {
-      margin-top: 24px;
-      padding-top: 18px;
+    h1 {
+      margin: 0 0 14px;
+      color: #0f172a;
+    }
+    h2 {
+      margin: 22px 0 8px;
+      color: #1d4ed8;
+      font-size: 20px;
+    }
+    p {
+      line-height: 1.6;
+      margin: 10px 0;
+      white-space: pre-line;
+    }
+    .divider {
+      border: 0;
       border-top: 1px solid #e5e7eb;
+      margin: 20px 0;
+    }
+    .actions {
+      margin-top: 20px;
       display: flex;
-      gap: 10px;
+      gap: 12px;
       align-items: center;
+      flex-wrap: wrap;
     }
     button {
       background: #1f6feb;
@@ -36,36 +52,52 @@
       border: 0;
       border-radius: 8px;
       padding: 10px 14px;
+      font-weight: 600;
       cursor: pointer;
     }
     button:hover { background: #1558b0; }
+    .ok {
+      color: #166534;
+      font-weight: 600;
+    }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <h1>Terms and Conditions for Guest Registration</h1>
-    <p>Please read these terms before submitting your personal details.</p>
+    <h1>Terms and Conditions / Условия и поверителност</h1>
 
-    <h2>1. Purpose</h2>
-    <p>Your data is collected only for legal accommodation registration obligations.</p>
+    <h2>English</h2>
+    <p>
+Terms and Conditions
 
-    <h2>2. Data Collected</h2>
-    <ul>
-      <li>Name, date of birth, identification details, document issue country.</li>
-      <li>Reservation-related details (apartment, check-in/check-out, reservation ID).</li>
-    </ul>
+In accordance with the General Data Protection Regulation (GDPR) (EU) 2016/679 and applicable national tourism regulations, including Article 116(5) of the Bulgarian Tourism Act, accommodation providers are required to register the identity details of guests staying at the property and submit them through the Unified Tourist Information System (ESTI) operated by the Ministry of Tourism of Bulgaria.
 
-    <h2>3. Data Processing</h2>
-    <p>Data is processed for compliance with legal reporting requirements and sent to authorized systems only.</p>
+By completing this form, you confirm that the information provided is accurate and agree that your personal data (such as name, date of birth, nationality, and identification details) will be processed solely for the purpose of guest registration and compliance with legal obligations.
 
-    <h2>4. Data Retention</h2>
-    <p>Data retention follows legal requirements and internal policy.</p>
+Your data will be used only for official registration and communication related to your stay. It will not be shared with third parties except when required by law.
 
-    <h2>5. Rights</h2>
-    <p>You may request information/correction according to applicable data-protection law.</p>
+The data will be stored only for the legally required period and will not be used for marketing or other purposes.
 
-    <div class="footer">
-      <button id="acceptTermsBtn" type="button">I have read and accept these Terms</button>
+By selecting “I agree”, you confirm that you have read and understood these terms and consent to the processing of your data for the purposes described above.
+    </p>
+
+    <hr class="divider" />
+
+    <h2>Български</h2>
+    <p>
+В съответствие с General Data Protection Regulation (GDPR) (ЕС) 2016/679 и приложимото национално законодателство в областта на туризма, включително чл. 116, ал. 5 от Закон за туризма на България, местата за настаняване са длъжни да регистрират данните за самоличност на настанените гости и да ги подават чрез Единна система за туристическа информация (ЕСТИ), поддържана от Министерство на туризма на Република България.
+
+С попълването на този формуляр Вие потвърждавате, че предоставената информация е точна и вярна, и се съгласявате личните Ви данни (като име, дата на раждане, националност и данни от документ за самоличност) да бъдат обработвани единствено за целите на регистрацията на престоя и изпълнение на законовите задължения на настаняващия.
+
+Вашите данни ще бъдат използвани само за официалната регистрация и комуникация, свързана с Вашия престой. Те няма да бъдат предоставяни на трети лица, освен когато това се изисква по закон.
+
+Данните ще се съхраняват само за законово изискуемия срок и няма да бъдат използвани за маркетингови или други цели.
+
+С отбелязване на „Съгласен/на съм“ Вие потвърждавате, че сте прочели и разбрали тези условия и давате съгласието си за обработване на личните данни за посочените цели.
+    </p>
+
+    <div class="actions">
+      <button id="acceptTermsBtn" type="button">I agree / Съгласен/на съм</button>
       <span id="statusText"></span>
     </div>
   </div>
@@ -74,7 +106,8 @@
     document.getElementById("acceptTermsBtn").addEventListener("click", function () {
       localStorage.setItem("guest_terms_accepted", "yes");
       localStorage.setItem("guest_terms_accepted_at", new Date().toISOString());
-      document.getElementById("statusText").textContent = "Accepted. You can return to the form.";
+      document.getElementById("statusText").textContent = "Accepted. You can now return to the registration form.";
+      document.getElementById("statusText").className = "ok";
     });
   </script>
 </body>
