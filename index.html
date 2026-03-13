@@ -65,11 +65,11 @@
       <input type="hidden" name="checkin" id="checkinInput" />
       <input type="hidden" name="checkout" id="checkoutInput" />
 
-      <label>First name *</label>
-      <input name="firstName" required />
+     <label>First name *</label>
+     <input id="firstNameInputVisible" name="firstName" required />
 
-      <label>Last name *</label>
-      <input name="lastName" required />
+     <label>Last name *</label>
+     <input id="lastNameInputVisible" name="lastName" required />
 
       <label>Date of birth *</label>
       <input type="date" name="birthDate" required />
@@ -160,8 +160,8 @@
   // hidden fields (sent later to Google Script)
   document.getElementById("reservationIdInput").value = reservationId;
   document.getElementById("aptNameInput").value = aptName;
-  document.getElementById("guestNameInput").value = guestName;
-  document.getElementById("guestLastNameInput").value = guestLastName;
+  document.getElementById("firstNameInputVisible").value = guestName;
+  document.getElementById("lastNameInputVisible").value = guestLastName;
   document.getElementById("checkinInput").value = checkin;
   document.getElementById("checkoutInput").value = checkout;
 
