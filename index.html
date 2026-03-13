@@ -107,38 +107,70 @@
     <p class="small">Test mode: submit only shows an alert + browser console output.</p>
   </div>
 
-  <script>
-    const p = new URLSearchParams(window.location.search);
+ <script>
+  const p = new URLSearchParams(window.location.search);
 
-    const aptName = p.get("aptName") || "";
-    const guestName = p.get("guestName") || "";
-    const guestLastName = p.get("guestLastName") || "";
-    const checkin = p.get("checkin") || "";
-    const checkout = p.get("checkout") || "";
-    const reservationId = p.get("reservationId") || "";
+  const aptName = p.get("aptName") || "";
+  const guestName = p.get("guestName") || "";
+  const guestLastName = p.get("guestLastName") || "";
+  const reservationId = p.get("reservationId") || "";
 
-    const fullName = [guestName, guestLastName].filter(Boolean).join(" ") || "Guest";
+  const rawCheckin = p.get("checkin") || "";   // e.g. "Friday, September 18"
+  const rawCheckout = p.get("checkout") || ""; // e.g. "Wednesday, September 23"
 
-    document.getElementById("hello").textContent = "Hello, " + fullName;
-    document.getElementById("aptNameValue").textContent = aptName || "-";
-    document.getElementById("guestValue").textContent = fullName || "-";
-    document.getElementById("checkinValue").textContent = checkin || "-";
-    document.getElementById("checkoutValue").textContent = checkout || "-";
-    document.getElementById("reservationValue").textContent = reservationId || "-";
+  function toIsoWithCurrentYear(raw) {
+    if (!raw) return "";
 
-    document.getElementById("reservationIdInput").value = reservationId;
-    document.getElementById("aptNameInput").value = aptName;
-    document.getElementById("guestNameInput").value = guestName;
-    document.getElementById("guestLastNameInput").value = guestLastName;
-    document.getElementById("checkinInput").value = checkin;
-    document.getElementById("checkoutInput").value = checkout;
+    // Expected input: "Weekday, Month Day"
+    const parts = raw.split(", ");
+    if (parts.length < 2) return raw; // fallback if unexpected format
 
-    document.getElementById("guestForm").addEventListener("submit", function (e) {
-      e.preventDefault();
-      const data = Object.fromEntries(new FormData(this).entries());
-      console.log("FORM DATA:", data);
-      alert("Test submit OK. Next step: send this data to Google Apps Script.");
-    });
-  </script>
+    const monthDay = parts[1].trim(); // "September 18"
+    const [monthName, dayStr] = monthDay.split(" ");
+    const day = parseInt(dayStr, 10);
+
+    const monthMap = {
+      January: 1, February: 2, March: 3, April: 4, May: 5, June: 6,
+      July: 7, August: 8, September: 9, October: 10, November: 11, December: 12
+    };
+
+    const month = monthMap[monthName];
+    if (!month || Number.isNaN(day)) return raw; // fallback
+
+    const year = new Date().getFullYear();
+    const mm = String(month).padStart(2, "0");
+    const dd = String(day).padStart(2, "0");
+
+    return `${year}-${mm}-${dd}`;
+  }
+
+  // Converted values (YYYY-MM-DD)
+  const checkin = toIsoWithCurrentYear(rawCheckin);
+  const checkout = toIsoWithCurrentYear(rawCheckout);
+
+  const fullName = [guestName, guestLastName].filter(Boolean).join(" ") || "Guest";
+
+  document.getElementById("hello").textContent = "Hello, " + fullName;
+  document.getElementById("aptNameValue").textContent = aptName || "-";
+  document.getElementById("guestValue").textContent = fullName || "-";
+  document.getElementById("checkinValue").textContent = checkin || "-";
+  document.getElementById("checkoutValue").textContent = checkout || "-";
+  document.getElementById("reservationValue").textContent = reservationId || "-";
+
+  // hidden fields (sent later to Google Script)
+  document.getElementById("reservationIdInput").value = reservationId;
+  document.getElementById("aptNameInput").value = aptName;
+  document.getElementById("guestNameInput").value = guestName;
+  document.getElementById("guestLastNameInput").value = guestLastName;
+  document.getElementById("checkinInput").value = checkin;
+  document.getElementById("checkoutInput").value = checkout;
+
+  document.getElementById("guestForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(this).entries());
+    console.log("FORM DATA:", data);
+    alert("Test submit OK. Next step: send this data to Google Apps Script.");
+  });
+</script>
 </body>
 </html>
