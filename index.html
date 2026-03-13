@@ -69,11 +69,17 @@
       <label for="firstNameInputVisible">First name *</label>
       <input id="firstNameInputVisible" name="firstName" required />
 
-      <label for="secondNameInputVisible">Second name</label>
-      <input id="secondNameInputVisible" name="secondName" />
+      <label for="secondNameInputVisible">Second name *</label>
+      <input id="secondNameInputVisible" name="secondName" required />
 
       <label for="lastNameInputVisible">Last name *</label>
       <input id="lastNameInputVisible" name="lastName" required />
+      <label for="genderSelect">Gender *</label>
+      <select id="genderSelect" name="gender" required>
+      <option value="">Select...</option>
+      <option value="M">Male</option>
+      <option value="F">Female</option>
+      </select>
 
       <label for="birthDateInput">Date of birth *</label>
       <input id="birthDateInput" type="date" name="birthDate" required />
@@ -84,13 +90,13 @@
       <label for="documentNumberInput">Document number *</label>
       <input id="documentNumberInput" name="documentNumber" required />
 
-      <label for="documentTypeSelect">Document type *</label>
-      <select id="documentTypeSelect" name="documentType" required>
-        <option value="">Select...</option>
-        <option value="ID">ID card</option>
-        <option value="PASSPORT">Passport</option>
-        <option value="DRL">Driver license</option>
-      </select>
+     <label for="documentTypeSelect">Document type *</label>
+<select id="documentTypeSelect" name="documentType" required>
+  <option value="">Select...</option>
+  <option value="ICA">ID card</option>
+  <option value="PAS">Passport</option>
+  <option value="DRL">Driver license</option>
+</select>
 
       <label for="documentIssueCountrySelect">Document issue country *</label>
       <select id="documentIssueCountrySelect" name="documentIssueCountryId" required>
