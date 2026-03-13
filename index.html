@@ -74,8 +74,21 @@
       <label>Date of birth *</label>
       <input type="date" name="birthDate" required />
 
-      <label>Nationality *</label>
-      <input name="nationality" required />
+     <label>Nationality *</label>
+     <select id="nationalitySelect" name="nationalityName" required>
+      <option value="">Select Country</option>
+
+  <!-- You can paste your full country list here -->
+  <option value="Bulgaria" data-country-code="BG">Bulgaria</option>
+  <option value="Poland" data-country-code="PL">Poland</option>
+  <option value="Turkey" data-country-code="TR">Turkey</option>
+  <option value="Germany" data-country-code="DE">Germany</option>
+  <option value="United Kingdom" data-country-code="GB">United Kingdom</option>
+  <option value="United States" data-country-code="US">United States</option>
+</select>
+
+<!-- Hidden field that will be submitted -->
+<input type="hidden" id="nationalityCodeInput" name="nationalityCode" />
 
       <label>ID / Passport number *</label>
       <input name="documentNumber" required />
