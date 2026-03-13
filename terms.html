@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Terms and Conditions</title>
+  <style>
+    body {
+      font-family: "Segoe UI", system-ui, sans-serif;
+      margin: 0;
+      background: #f6f8fc;
+      color: #1f2937;
+    }
+    .wrap {
+      max-width: 900px;
+      margin: 30px auto;
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 10px 28px rgba(0,0,0,0.08);
+      padding: 28px;
+    }
+    h1 { margin-top: 0; color: #0f172a; }
+    h2 { margin-top: 24px; color: #1d4ed8; }
+    p, li { line-height: 1.55; }
+    .footer {
+      margin-top: 24px;
+      padding-top: 18px;
+      border-top: 1px solid #e5e7eb;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    button {
+      background: #1f6feb;
+      color: #fff;
+      border: 0;
+      border-radius: 8px;
+      padding: 10px 14px;
+      cursor: pointer;
+    }
+    button:hover { background: #1558b0; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Terms and Conditions for Guest Registration</h1>
+    <p>Please read these terms before submitting your personal details.</p>
+
+    <h2>1. Purpose</h2>
+    <p>Your data is collected only for legal accommodation registration obligations.</p>
+
+    <h2>2. Data Collected</h2>
+    <ul>
+      <li>Name, date of birth, identification details, document issue country.</li>
+      <li>Reservation-related details (apartment, check-in/check-out, reservation ID).</li>
+    </ul>
+
+    <h2>3. Data Processing</h2>
+    <p>Data is processed for compliance with legal reporting requirements and sent to authorized systems only.</p>
+
+    <h2>4. Data Retention</h2>
+    <p>Data retention follows legal requirements and internal policy.</p>
+
+    <h2>5. Rights</h2>
+    <p>You may request information/correction according to applicable data-protection law.</p>
+
+    <div class="footer">
+      <button id="acceptTermsBtn" type="button">I have read and accept these Terms</button>
+      <span id="statusText"></span>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("acceptTermsBtn").addEventListener("click", function () {
+      localStorage.setItem("guest_terms_accepted", "yes");
+      localStorage.setItem("guest_terms_accepted_at", new Date().toISOString());
+      document.getElementById("statusText").textContent = "Accepted. You can return to the form.";
+    });
+  </script>
+</body>
+</html>
