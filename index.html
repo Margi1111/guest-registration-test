@@ -75,12 +75,6 @@
       <label for="birthDateInput">Date of birth *</label>
       <input id="birthDateInput" type="date" name="birthDate" required />
 
-      <label for="nationalitySelect">Nationality *</label>
-      <select id="nationalitySelect" name="nationalityName" required>
-        <option value="">Select Country</option>
-      </select>
-      <input type="hidden" id="nationalityCodeInput" name="nationalityCode" />
-
       <label for="documentNumberInput">ID / Passport number *</label>
       <input id="documentNumberInput" name="documentNumber" required />
 
@@ -91,14 +85,48 @@
         <option value="PASSPORT">Passport</option>
       </select>
 
-      <label for="documentCountryInput">Document issue country *</label>
-      <input id="documentCountryInput" name="documentCountry" required />
+      <label for="documentIssueCountrySelect">Document issue country *</label>
+      <select id="documentIssueCountrySelect" name="documentIssueCountryId" required>
+        <option value="" selected>Select Country</option>
+        <option value="1" data-country-code="AU">Australia</option>
+        <option value="2" data-country-code="AT">Austria</option>
+        <option value="3" data-country-code="AZ">Azerbaijan</option>
+        <option value="4" data-country-code="AL">Albania</option>
+        <option value="5" data-country-code="DZ">Algeria</option>
+        <option value="37" data-country-code="BG">Bulgaria</option>
+        <option value="40" data-country-code="GB">United Kingdom</option>
+        <option value="51" data-country-code="DE">Germany</option>
+        <option value="58" data-country-code="GR">Greece</option>
+        <option value="83" data-country-code="ES">Spain</option>
+        <option value="84" data-country-code="IT">Italy</option>
+        <option value="92" data-country-code="CA">Canada</option>
+        <option value="98" data-country-code="CN">China</option>
+        <option value="131" data-country-code="MX">Mexico</option>
+        <option value="144" data-country-code="NL">Netherlands</option>
+        <option value="148" data-country-code="NZ">New Zealand</option>
+        <option value="150" data-country-code="NO">Norway</option>
+        <option value="165" data-country-code="PL">Poland</option>
+        <option value="166" data-country-code="PT">Portugal</option>
+        <option value="172" data-country-code="RO">Romania</option>
+        <option value="173" data-country-code="RU">Russia</option>
+        <option value="180" data-country-code="US">United States</option>
+        <option value="197" data-country-code="SK">Slovakia</option>
+        <option value="198" data-country-code="SI">Slovenia</option>
+        <option value="206" data-country-code="TH">Thailand</option>
+        <option value="215" data-country-code="TR">Turkey</option>
+        <option value="219" data-country-code="UA">Ukraine</option>
+        <option value="226" data-country-code="FI">Finland</option>
+        <option value="228" data-country-code="FR">France</option>
+        <option value="235" data-country-code="HR">Croatia</option>
+        <option value="239" data-country-code="CZ">Czech Republic</option>
+        <option value="241" data-country-code="CH">Switzerland</option>
+        <option value="242" data-country-code="SE">Sweden</option>
+        <option value="247" data-country-code="JP">Japan</option>
+      </select>
 
-      <label for="emailInput">Email</label>
-      <input id="emailInput" type="email" name="email" />
-
-      <label for="phoneInput">Phone</label>
-      <input id="phoneInput" name="phone" />
+      <!-- Hidden fields to send country name + short code -->
+      <input type="hidden" id="documentIssueCountryNameInput" name="documentIssueCountryName" />
+      <input type="hidden" id="documentIssueCountryCodeInput" name="documentIssueCountryCode" />
 
       <label style="display:flex; gap:8px; align-items:flex-start;">
         <input type="checkbox" name="consent" required style="width:auto; margin-top:3px;" />
@@ -112,44 +140,10 @@
   </div>
 
   <script>
-    const countries = [
-      { name: "Australia", code: "AU" }, { name: "Austria", code: "AT" }, { name: "Belgium", code: "BE" },
-      { name: "Bulgaria", code: "BG" }, { name: "Canada", code: "CA" }, { name: "China", code: "CN" },
-      { name: "Croatia", code: "HR" }, { name: "Cyprus", code: "CY" }, { name: "Czech Republic", code: "CZ" },
-      { name: "Denmark", code: "DK" }, { name: "Estonia", code: "EE" }, { name: "Finland", code: "FI" },
-      { name: "France", code: "FR" }, { name: "Germany", code: "DE" }, { name: "Greece", code: "GR" },
-      { name: "Hungary", code: "HU" }, { name: "Ireland", code: "IE" }, { name: "Israel", code: "IL" },
-      { name: "Italy", code: "IT" }, { name: "Japan", code: "JP" }, { name: "Latvia", code: "LV" },
-      { name: "Lithuania", code: "LT" }, { name: "Netherlands", code: "NL" }, { name: "Norway", code: "NO" },
-      { name: "Poland", code: "PL" }, { name: "Portugal", code: "PT" }, { name: "Romania", code: "RO" },
-      { name: "Serbia", code: "RS" }, { name: "Slovakia", code: "SK" }, { name: "Slovenia", code: "SI" },
-      { name: "Spain", code: "ES" }, { name: "Sweden", code: "SE" }, { name: "Switzerland", code: "CH" },
-      { name: "Turkey", code: "TR" }, { name: "Ukraine", code: "UA" }, { name: "United Kingdom", code: "GB" },
-      { name: "United States", code: "US" }
-    ];
-
-    function fillCountrySelect() {
-      const select = document.getElementById("nationalitySelect");
-      countries.forEach((c) => {
-        const opt = document.createElement("option");
-        opt.value = c.name;
-        opt.textContent = c.name;
-        opt.dataset.countryCode = c.code;
-        select.appendChild(opt);
-      });
-    }
-
-    function syncNationalityCode() {
-      const select = document.getElementById("nationalitySelect");
-      const selected = select.options[select.selectedIndex];
-      const code = selected ? (selected.dataset.countryCode || "") : "";
-      document.getElementById("nationalityCodeInput").value = code;
-    }
-
     function toIsoWithCurrentYear(raw) {
       if (!raw) return "";
       const parts = raw.split(", ");
-      if (parts.length < 2) return raw; // fallback if unknown format
+      if (parts.length < 2) return raw;
 
       const monthDay = parts[1].trim(); // e.g. "September 18"
       const [monthName, dayStr] = monthDay.split(" ");
@@ -164,9 +158,18 @@
       if (!month || Number.isNaN(day)) return raw;
 
       const year = new Date().getFullYear();
-      const mm = String(month).padStart(2, "0");
-      const dd = String(day).padStart(2, "0");
-      return `${year}-${mm}-${dd}`;
+      return `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+    }
+
+    function syncDocumentIssueCountryFields() {
+      const select = document.getElementById("documentIssueCountrySelect");
+      const selected = select.options[select.selectedIndex];
+
+      const code = selected ? (selected.dataset.countryCode || "") : "";
+      const name = selected && selected.value !== "" ? selected.textContent.trim() : "";
+
+      document.getElementById("documentIssueCountryCodeInput").value = code;
+      document.getElementById("documentIssueCountryNameInput").value = name;
     }
 
     // Read URL params
@@ -180,7 +183,7 @@
 
     const fullName = [guestName, guestLastName].filter(Boolean).join(" ") || "Guest";
 
-    // Top section
+    // Header/top block
     document.getElementById("hello").textContent = "Hello, " + fullName;
     document.getElementById("aptNameValue").textContent = aptName || "-";
     document.getElementById("guestValue").textContent = fullName || "-";
@@ -200,18 +203,23 @@
     document.getElementById("firstNameInputVisible").value = guestName;
     document.getElementById("lastNameInputVisible").value = guestLastName;
 
-    // Countries dropdown init
-    fillCountrySelect();
-    document.getElementById("nationalitySelect").addEventListener("change", syncNationalityCode);
-    syncNationalityCode();
+    // Country fields sync
+    document.getElementById("documentIssueCountrySelect")
+      .addEventListener("change", syncDocumentIssueCountryFields);
+    syncDocumentIssueCountryFields();
 
     // Test submit
     document.getElementById("guestForm").addEventListener("submit", function (e) {
       e.preventDefault();
-      syncNationalityCode();
+      syncDocumentIssueCountryFields();
       const data = Object.fromEntries(new FormData(this).entries());
       console.log("FORM DATA:", data);
-      alert("Test submit OK. nationalityCode = " + (data.nationalityCode || ""));
+      alert(
+        "Test submit OK\n" +
+        "documentIssueCountryId: " + (data.documentIssueCountryId || "") + "\n" +
+        "documentIssueCountryName: " + (data.documentIssueCountryName || "") + "\n" +
+        "documentIssueCountryCode: " + (data.documentIssueCountryCode || "")
+      );
     });
   </script>
 </body>
