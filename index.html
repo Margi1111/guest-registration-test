@@ -184,6 +184,15 @@
     console.log("FORM DATA:", data);
     alert("Test submit OK. Next step: send this data to Google Apps Script.");
   });
+  function syncNationalityCode() {
+  const select = document.getElementById("nationalitySelect");
+  const selected = select.options[select.selectedIndex];
+  const code = selected ? (selected.dataset.countryCode || "") : "";
+  document.getElementById("nationalityCodeInput").value = code;
+}
+
+document.getElementById("nationalitySelect").addEventListener("change", syncNationalityCode);
+syncNationalityCode(); // run once on load
 </script>
 </body>
 </html>
