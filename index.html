@@ -501,15 +501,36 @@
 
     renderGuestBlocks(guestQty, guestName, guestLastName);
 
-    document.getElementById("guestForm").addEventListener("submit", function (e) {
-      e.preventDefault();
-      for (let i = 1; i <= guestQty; i += 1) {
-        syncGuestCountryFields(i);
-      }
-      const data = Object.fromEntries(new FormData(this).entries());
-      console.log("FORM DATA:", data);
-      alert("Test submit OK");
+    const SCRIPT_URL = "PASTE_YOUR_WEBAPP_EXEC_URL_HERE";
+
+document.getElementById("guestForm").addEventListener("submit", async function (e) {
+  e.preventDefault();
+
+  for (let i = 1; i <= guestQty; i += 1) {
+    syncGuestCountryFields(i);
+  }
+
+  const formData = new FormData(this);
+
+  try {
+    const res = await fetch(SCRIPT_URL, {
+      method: "POST",
+      body: formData
     });
+
+    const data = await res.json();
+
+    if (data.status === "ok") {
+      alert("Registration submitted successfully.");
+      this.reset();
+      renderGuestBlocks(guestQty, guestName, guestLastName);
+    } else {
+      alert("Submission error: " + (data.message || "Unknown error"));
+    }
+  } catch (error) {
+    alert("Network error. Please try again.");
+  }
+});
   </script>
 </body>
 </html>
