@@ -501,7 +501,7 @@
 
     renderGuestBlocks(guestQty, guestName, guestLastName);
 
-    const SCRIPT_URL = "PASTE_YOUR_WEBAPP_EXEC_URL_HERE";
+   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby7vrBImkVt7snwfJm7bv-yLFER7cOzJl4pAyHmrQ4dO9WWHQt6EPq4CoSuCa0Qg2yIPw/exec";
 
 document.getElementById("guestForm").addEventListener("submit", async function (e) {
   e.preventDefault();
@@ -513,7 +513,7 @@ document.getElementById("guestForm").addEventListener("submit", async function (
   const formData = new FormData(this);
 
   try {
-    const res = await fetch(https://script.google.com/macros/s/AKfycby7vrBImkVt7snwfJm7bv-yLFER7cOzJl4pAyHmrQ4dO9WWHQt6EPq4CoSuCa0Qg2yIPw/exec, {
+    const res = await fetch(SCRIPT_URL, {
       method: "POST",
       body: formData
     });
