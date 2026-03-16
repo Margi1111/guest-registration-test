@@ -469,37 +469,26 @@
   const identityLabel = document.getElementById(`g${idx}_identityLabel`);
   const isBG = code === "BG";
 
-  // keep title always
-  identityInput.title = "Identity Number: for Bulgaria exactly 10 symbols; for other countries maximum 10.";
-
   if (isBG) {
+    // Bulgaria: required, exactly 10, digits only
     identityInput.required = true;
     identityInput.minLength = 10;
     identityInput.maxLength = 10;
+    identityInput.pattern = "[0-9]{10}";
+    identityInput.title = "For Bulgaria, Identity Number must be exactly 10 digits.";
     identityLabel.textContent = "Identity Number *";
+    identityInput.inputMode = "numeric";
   } else {
+    // Other countries: optional, max 10, any symbols allowed
     identityInput.required = false;
     identityInput.removeAttribute("minlength");
     identityInput.maxLength = 10;
+    identityInput.removeAttribute("pattern");
+    identityInput.title = "Maximum 10 symbols.";
     identityLabel.textContent = "Identity Number";
+    identityInput.inputMode = "text";
   }
 }
-    function renderGuestBlocks(guestQty, prefillFirstName, prefillLastName) {
-      const container = document.getElementById("guestBlocksContainer");
-      const countryOptionsHtml = document.getElementById("countryOptionsTemplate").innerHTML;
-
-      let html = "";
-      for (let i = 1; i <= guestQty; i += 1) {
-        html += makeGuestBlock(i, prefillFirstName, prefillLastName, countryOptionsHtml);
-      }
-      container.innerHTML = html;
-
-      for (let i = 1; i <= guestQty; i += 1) {
-        const sel = document.getElementById(`g${i}_documentIssueCountryId`);
-        sel.addEventListener("change", function () { syncGuestCountryFields(i); });
-        syncGuestCountryFields(i);
-      }
-    }
 
     const p = new URLSearchParams(window.location.search);
     const aptName = p.get("aptName") || "";
