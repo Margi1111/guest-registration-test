@@ -615,10 +615,22 @@ document.getElementById("guestForm").addEventListener("submit", async function (
     const data = await res.json();
 
     if (data.status === "ok") {
-      alert("Registration submitted successfully.");
-      this.reset();
-      renderGuestBlocks(guestQty, guestName, guestLastName);
-    } else {
+  // hide form after successful submission of
+  this. style.display = "none";
+
+  // show success message
+  const msg = document.createElement("div");
+  msg.id = "successMessage";
+  msg. style.marginTop = "14px";
+  msg. style.padding = "12px";
+  msg. style.border = "1px solid #bbf7d0";
+  msg. style.background = "#f0fdf4";
+  msg. style.color = "#166534";
+  msg. style.borderRadius = "8px";
+  msg. style.fontWeight = "600";
+  msg.textContent = "Thank you! Registration submitted successfully."
+  this.parentNode.appendChild(msg);
+} else {
       alert("Submission error: " + (data.message || "Unknown error"));
     }
   } catch (error) {
