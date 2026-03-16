@@ -456,7 +456,82 @@
       `;
     }
 
- function syncGuestCountryFields(idx) {
+ function makeGuestBlock(idx, prefillFirstName, prefillLastName, countryOptionsHtml) {
+  const first = idx === 1 ? (prefillFirstName || "") : "";
+  const last = idx === 1 ? (prefillLastName || "") : "";
+
+  return `
+    <fieldset>
+      <legend>Guest ${idx}</legend>
+
+      <label for="g${idx}_firstName">First name *</label>
+      <input id="g${idx}_firstName" name="g${idx}_firstName" required value="${first}" />
+
+      <label for="g${idx}_secondName">Second name *</label>
+      <input id="g${idx}_secondName" name="g${idx}_secondName" required />
+
+      <label for="g${idx}_lastName">Last name *</label>
+      <input id="g${idx}_lastName" name="g${idx}_lastName" required value="${last}" />
+
+      <label for="g${idx}_gender">Gender *</label>
+      <select id="g${idx}_gender" name="g${idx}_gender" required>
+        <option value="">Select...</option>
+        <option value="M">Male</option>
+        <option value="F">Female</option>
+      </select>
+
+      <label for="g${idx}_birthDate">Date of birth *</label>
+      <input id="g${idx}_birthDate" type="date" name="g${idx}_birthDate" required />
+
+      <label id="g${idx}_identityLabel" for="g${idx}_identificationNumber">Identity Number</label>
+      <input
+        id="g${idx}_identificationNumber"
+        name="g${idx}_identificationNumber"
+        maxlength="10"
+        title="Identity Number: for Bulgaria - 10 symbols; for other countries - not required."
+      />
+
+      <label for="g${idx}_documentNumber">Document number *</label>
+      <input id="g${idx}_documentNumber" name="g${idx}_documentNumber" required maxlength="20" />
+
+      <label for="g${idx}_documentType">Document type *</label>
+      <select id="g${idx}_documentType" name="g${idx}_documentType" required>
+        <option value="">Select...</option>
+        <option value="ICA">ID card</option>
+        <option value="PAS">Passport</option>
+        <option value="DRL">Driver license</option>
+      </select>
+
+      <label for="g${idx}_documentIssueCountryId">Document issue country *</label>
+      <select id="g${idx}_documentIssueCountryId" name="g${idx}_documentIssueCountryId" required>
+        ${countryOptionsHtml}
+      </select>
+
+      <input type="hidden" id="g${idx}_documentIssueCountryCode" name="g${idx}_documentIssueCountryCode" />
+      <input type="hidden" id="g${idx}_documentIssueCountryName" name="g${idx}_documentIssueCountryName" />
+    </fieldset>
+  `;
+}
+
+function renderGuestBlocks(guestQty, prefillFirstName, prefillLastName) {
+  const container = document.getElementById("guestBlocksContainer");
+  const countryOptionsHtml = document.getElementById("countryOptionsTemplate").innerHTML;
+
+  let html = "";
+  for (let i = 1; i <= guestQty; i += 1) {
+    html += makeGuestBlock(i, prefillFirstName, prefillLastName, countryOptionsHtml);
+  }
+  container.innerHTML = html;
+
+  for (let i = 1; i <= guestQty; i += 1) {
+    const sel = document.getElementById(`g${i}_documentIssueCountryId`);
+    sel.addEventListener("change", function () { syncGuestCountryFields(i); });
+    syncGuestCountryFields(i);
+  }
+}
+ 
+    
+  function syncGuestCountryFields(idx) {
   const select = document.getElementById(`g${idx}_documentIssueCountryId`);
   const selected = select.options[select.selectedIndex];
   const code = selected ? (selected.dataset.countryCode || "") : "";
