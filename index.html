@@ -420,9 +420,16 @@
           <label for="g${idx}_birthDate">Date of birth *</label>
           <input id="g${idx}_birthDate" type="date" name="g${idx}_birthDate" required />
 
-          <label for="g${idx}_identificationNumber">Identification number *</label>
-          <input id="g${idx}_identificationNumber" name="g${idx}_identificationNumber" required />
-
+          <label for="g${idx}_identificationNumber">Identity Number *</label>
+<input
+  id="g${idx}_identificationNumber"
+  name="g${idx}_identificationNumber"
+  required
+  minlength="10"
+  maxlength="10"
+  pattern="[A-Za-z0-9]{10}"
+  title="Identity Number must be exactly 10 letters/numbers."
+/>
           <label for="g${idx}_documentNumber">Document number *</label>
           <input id="g${idx}_documentNumber" name="g${idx}_documentNumber" required />
 
