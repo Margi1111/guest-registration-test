@@ -431,7 +431,12 @@
   title="Identity Number must be exactly 10 letters/numbers."
 />
           <label for="g${idx}_documentNumber">Document number *</label>
-          <input id="g${idx}_documentNumber" name="g${idx}_documentNumber" required />
+          <input
+  id="g${idx}_documentNumber"
+  name="g${idx}_documentNumber"
+  required
+  maxlength="20"
+/>
 
           <label for="g${idx}_documentType">Document type *</label>
           <select id="g${idx}_documentType" name="g${idx}_documentType" required>
