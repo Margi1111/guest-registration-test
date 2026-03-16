@@ -421,7 +421,13 @@
           <input id="g${idx}_birthDate" type="date" name="g${idx}_birthDate" required />
 
       
-          <input id="g${idx}_identificationNumber" name="g${idx}_identificationNumber" maxlength="10" />
+         <label id="g${idx}_identityLabel" for="g${idx}_identificationNumber">Identity Number</label>
+<input
+  id="g${idx}_identificationNumber"
+  name="g${idx}_identificationNumber"
+  maxlength="10"
+  title="Identity Number: for Bulgaria- 10 symbols; for other countries- not required."
+/>
 
           <label for="g${idx}_documentNumber">Document number *</label>
           <input
@@ -463,23 +469,21 @@
   const identityLabel = document.getElementById(`g${idx}_identityLabel`);
   const isBG = code === "BG";
 
+  // keep title always
+  identityInput.title = "Identity Number: for Bulgaria exactly 10 symbols; for other countries maximum 10.";
+
   if (isBG) {
     identityInput.required = true;
     identityInput.minLength = 10;
     identityInput.maxLength = 10;
-    identityInput.pattern = "[A-Za-z0-9]{10}";
-    identityInput.title = "For Bulgaria, Identity Number must be exactly 10 symbols.";
     identityLabel.textContent = "Identity Number *";
   } else {
     identityInput.required = false;
-    identityInput.minLength = 0;
-    identityInput.maxLength = 10; // keep only max rule for non-BG
-    identityInput.pattern = "";
-    identityInput.title = "";
+    identityInput.removeAttribute("minlength");
+    identityInput.maxLength = 10;
     identityLabel.textContent = "Identity Number";
   }
 }
-
     function renderGuestBlocks(guestQty, prefillFirstName, prefillLastName) {
       const container = document.getElementById("guestBlocksContainer");
       const countryOptionsHtml = document.getElementById("countryOptionsTemplate").innerHTML;
