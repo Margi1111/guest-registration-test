@@ -420,7 +420,8 @@
           <label for="g${idx}_birthDate">Date of birth *</label>
           <input id="g${idx}_birthDate" type="date" name="g${idx}_birthDate" required />
 
-          <label for="g${idx}_identificationNumber">Identity Number *</label>
+        <!--  <label for="g${idx}_identificationNumber">Identity Number *</label> -->
+          <label id="g${idx}_identityLabel" for="g${idx}_identificationNumber">Identity Number</label>
 <input
   id="g${idx}_identificationNumber"
   name="g${idx}_identificationNumber"
@@ -457,15 +458,23 @@
       `;
     }
 
-    function syncGuestCountryFields(idx) {
-      const select = document.getElementById(`g${idx}_documentIssueCountryId`);
-      const selected = select.options[select.selectedIndex];
-      const code = selected ? (selected.dataset.countryCode || "") : "";
-      const name = selected && selected.value !== "" ? selected.textContent.trim() : "";
+   function syncGuestCountryFields(idx) {
+  const select = document.getElementById(`g${idx}_documentIssueCountryId`);
+  const selected = select.options[select.selectedIndex];
+  const code = selected ? (selected.dataset.countryCode || "") : "";
+  const name = selected && selected.value !== "" ? selected.textContent.trim() : "";
 
-      document.getElementById(`g${idx}_documentIssueCountryCode`).value = code;
-      document.getElementById(`g${idx}_documentIssueCountryName`).value = name;
-    }
+  document.getElementById(`g${idx}_documentIssueCountryCode`).value = code;
+  document.getElementById(`g${idx}_documentIssueCountryName`).value = name;
+
+  // Bulgaria rule: Identity Number required only for BG
+  const identityInput = document.getElementById(`g${idx}_identificationNumber`);
+  const identityLabel = document.getElementById(`g${idx}_identityLabel`);
+  const isBG = code === "BG";
+
+  identityInput.required = isBG;
+  identityLabel.textContent = isBG ? "Identity Number *": "Identity Number";
+}
 
     function renderGuestBlocks(guestQty, prefillFirstName, prefillLastName) {
       const container = document.getElementById("guestBlocksContainer");
