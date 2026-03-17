@@ -638,7 +638,9 @@ function syncGuestCountryFields(idx) {
 
 document.getElementById("guestForm").addEventListener("submit", async function (e) {
   e.preventDefault();
-console.log("submit handler works");
+  console.log("submit handler works");
+  return;
+  
   
   for (let i = 1; i <= guestQty; i += 1) {
     syncGuestCountryFields(i);
