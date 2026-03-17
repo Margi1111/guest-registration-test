@@ -547,7 +547,7 @@ function renderGuestBlocks(guestQty, prefillFirstName, prefillLastName) {
 }
  
     
- function syncGuestCountryFields(idx) {
+function syncGuestCountryFields(idx) {
   const select = document.getElementById(`g${idx}_documentIssueCountryId`);
   if (!select) return;
 
@@ -562,11 +562,13 @@ function renderGuestBlocks(guestQty, prefillFirstName, prefillLastName) {
 
   const isBG = code === "BG";
 
+  // Identity Number rule
   const identityInput = document.getElementById(`g${idx}_identificationNumber`);
   const identityLabel = document.getElementById(`g${idx}_identityLabel`);
 
   if (identityInput) {
     if (isBG) {
+      // Bulgaria: required, exactly 10, digits only
       identityInput.required = true;
       identityInput.minLength = 10;
       identityInput.maxLength = 10;
@@ -574,6 +576,7 @@ function renderGuestBlocks(guestQty, prefillFirstName, prefillLastName) {
       identityInput.title = "For Bulgaria, Identity Number must be exactly 10 digits.";
       identityInput.inputMode = "numeric";
     } else {
+      // Other countries: optional, max 10
       identityInput.required = false;
       identityInput.removeAttribute("minlength");
       identityInput.maxLength = 10;
@@ -582,10 +585,12 @@ function renderGuestBlocks(guestQty, prefillFirstName, prefillLastName) {
       identityInput.inputMode = "text";
     }
   }
+
   if (identityLabel) {
-    identityLabel.textContent = isBG ? "Identity Number *" : "Identity Number";
+    identityLabel.textContent = isBG ? "Identity Number *": "Identity Number";
   }
 
+  // Second name rule
   const secondNameInput = document.getElementById(`g${idx}_secondName`);
   const secondNameLabel = document.getElementById(`g${idx}_secondNameLabel`);
 
@@ -593,8 +598,9 @@ function renderGuestBlocks(guestQty, prefillFirstName, prefillLastName) {
     secondNameInput.maxLength = 150;
     secondNameInput.required = isBG;
   }
+
   if (secondNameLabel) {
-    secondNameLabel.textContent = isBG ? "Second name *" : "Second name";
+    secondNameLabel.textContent = isBG ? "Second name *": "Second name";
   }
 }
 
