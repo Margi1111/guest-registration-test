@@ -402,13 +402,13 @@
           <legend>Guest ${idx}</legend>
 
           <label for="g${idx}_firstName">First name *</label>
-          <input id="g${idx}_firstName" name="g${idx}_firstName" required value="${first}" />
+          <input id="g${idx}_firstName" name="g${idx}_firstName" required maxlength="150" value="${first}" />
 
-          <label for="g${idx}_secondName">Second name *</label>
-          <input id="g${idx}_secondName" name="g${idx}_secondName" required />
+          <label id="g${idx}_secondNameLabel" for="g${idx}_secondName">Second name</label>
+          <input id="g${idx}_secondName" name="g${idx}_secondName" maxlength="150" />
 
           <label for="g${idx}_lastName">Last name *</label>
-          <input id="g${idx}_lastName" name="g${idx}_lastName" required value="${last}" />
+          <input id="g${idx}_lastName" name="g${idx}_lastName" required maxlength="150" value="${last}" />
 
           <label for="g${idx}_gender">Gender *</label>
           <select id="g${idx}_gender" name="g${idx}_gender" required>
