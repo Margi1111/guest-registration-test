@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -403,13 +402,13 @@
           <legend>Guest ${idx}</legend>
 
           <label for="g${idx}_firstName">First name *</label>
-          <input id="g${idx}_firstName" name="g${idx}_firstName" required value="${first}" />
+          <input id="g${idx}_firstName" name="g${idx}_firstName" required maxlength="150" value="${first}" />
 
-          <label for="g${idx}_secondName">Second name *</label>
-          <input id="g${idx}_secondName" name="g${idx}_secondName" required />
+          <label id="g${idx}_secondNameLabel" for="g${idx}_secondName">Second name</label>
+          <input id="g${idx}_secondName" name="g${idx}_secondName" maxlength="150" />
 
           <label for="g${idx}_lastName">Last name *</label>
-          <input id="g${idx}_lastName" name="g${idx}_lastName" required value="${last}" />
+          <input id="g${idx}_lastName" name="g${idx}_lastName" required maxlength="150" value="${last}" />
 
           <label for="g${idx}_gender">Gender *</label>
           <select id="g${idx}_gender" name="g${idx}_gender" required>
@@ -465,14 +464,30 @@
     <fieldset>
       <legend>Guest ${idx}</legend>
 
-      <label for="g${idx}_firstName">First name *</label>
-      <input id="g${idx}_firstName" name="g${idx}_firstName" required value="${first}" />
+     <label for="g${idx}_firstName">First name *</label>
+<input
+  id="g${idx}_firstName"
+  name="g${idx}_firstName"
+  required
+  maxlength="150"
+  value="${first}"
+/>
 
-      <label for="g${idx}_secondName">Second name *</label>
-      <input id="g${idx}_secondName" name="g${idx}_secondName" required />
+<label id="g${idx}_secondNameLabel" for="g${idx}_secondName">Second name</label>
+<input
+  id="g${idx}_secondName"
+  name="g${idx}_secondName"
+  maxlength="150"
+/>
 
-      <label for="g${idx}_lastName">Last name *</label>
-      <input id="g${idx}_lastName" name="g${idx}_lastName" required value="${last}" />
+<label for="g${idx}_lastName">Last name *</label>
+<input
+  id="g${idx}_lastName"
+  name="g${idx}_lastName"
+  required
+  maxlength="150"
+  value="${last}"
+/>
 
       <label for="g${idx}_gender">Gender *</label>
       <select id="g${idx}_gender" name="g${idx}_gender" required>
@@ -532,37 +547,60 @@ function renderGuestBlocks(guestQty, prefillFirstName, prefillLastName) {
 }
  
     
-  function syncGuestCountryFields(idx) {
+function syncGuestCountryFields(idx) {
   const select = document.getElementById(`g${idx}_documentIssueCountryId`);
+  if (!select) return;
+
   const selected = select.options[select.selectedIndex];
   const code = selected ? (selected.dataset.countryCode || "") : "";
   const name = selected && selected.value !== "" ? selected.textContent.trim() : "";
 
-  document.getElementById(`g${idx}_documentIssueCountryCode`).value = code;
-  document.getElementById(`g${idx}_documentIssueCountryName`).value = name;
+  const codeInput = document.getElementById(`g${idx}_documentIssueCountryCode`);
+  const nameInput = document.getElementById(`g${idx}_documentIssueCountryName`);
+  if (codeInput) codeInput.value = code;
+  if (nameInput) nameInput.value = name;
 
-  const identityInput = document.getElementById(`g${idx}_identificationNumber`);
-  const identityLabel = document.getElementById(`g${idx}_identityLabel`);
   const isBG = code === "BG";
 
-  if (isBG) {
-    // Bulgaria: required, exactly 10, digits only
-    identityInput.required = true;
-    identityInput.minLength = 10;
-    identityInput.maxLength = 10;
-    identityInput.pattern = "[0-9]{10}";
-    identityInput.title = "For Bulgaria, Identity Number must be exactly 10 digits.";
-    identityLabel.textContent = "Identity Number *";
-    identityInput.inputMode = "numeric";
-  } else {
-    // Other countries: optional, max 10, any symbols allowed
-    identityInput.required = false;
-    identityInput.removeAttribute("minlength");
-    identityInput.maxLength = 10;
-    identityInput.removeAttribute("pattern");
-    identityInput.title = "Maximum 10 symbols.";
-    identityLabel.textContent = "Identity Number";
-    identityInput.inputMode = "text";
+  // Identity Number rule
+  const identityInput = document.getElementById(`g${idx}_identificationNumber`);
+  const identityLabel = document.getElementById(`g${idx}_identityLabel`);
+
+  if (identityInput) {
+    if (isBG) {
+      // Bulgaria: required, exactly 10, digits only
+      identityInput.required = true;
+      identityInput.minLength = 10;
+      identityInput.maxLength = 10;
+      identityInput.pattern = "[0-9]{10}";
+      identityInput.title = "For Bulgaria, Identity Number must be exactly 10 digits.";
+      identityInput.inputMode = "numeric";
+    } else {
+      // Other countries: optional, max 10
+      identityInput.required = false;
+      identityInput.removeAttribute("minlength");
+      identityInput.maxLength = 10;
+      identityInput.removeAttribute("pattern");
+      identityInput.title = "Maximum 10 symbols.";
+      identityInput.inputMode = "text";
+    }
+  }
+
+  if (identityLabel) {
+    identityLabel.textContent = isBG ? "Identity Number *": "Identity Number";
+  }
+
+  // Second name rule
+  const secondNameInput = document.getElementById(`g${idx}_secondName`);
+  const secondNameLabel = document.getElementById(`g${idx}_secondNameLabel`);
+
+  if (secondNameInput) {
+    secondNameInput.maxLength = 150;
+    secondNameInput.required = isBG;
+  }
+
+  if (secondNameLabel) {
+    secondNameLabel.textContent = isBG ? "Second name *": "Second name";
   }
 }
 
