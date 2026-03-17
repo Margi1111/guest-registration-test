@@ -540,12 +540,13 @@ function renderGuestBlocks(guestQty, prefillFirstName, prefillLastName) {
   document.getElementById(`g${idx}_documentIssueCountryCode`).value = code;
   document.getElementById(`g${idx}_documentIssueCountryName`).value = name;
 
-  const identityInput = document.getElementById(`g${idx}_identificationNumber`);
-  const identityLabel = document.getElementById(`g${idx}_identityLabel`);
   const isBG = code === "BG";
 
+  // Identity Number rule
+  const identityInput = document.getElementById(`g${idx}_identificationNumber`);
+  const identityLabel = document.getElementById(`g${idx}_identityLabel`);
+
   if (isBG) {
-    // Bulgaria: required, exactly 10, digits only
     identityInput.required = true;
     identityInput.minLength = 10;
     identityInput.maxLength = 10;
@@ -554,7 +555,6 @@ function renderGuestBlocks(guestQty, prefillFirstName, prefillLastName) {
     identityLabel.textContent = "Identity Number *";
     identityInput.inputMode = "numeric";
   } else {
-    // Other countries: optional, max 10, any symbols allowed
     identityInput.required = false;
     identityInput.removeAttribute("minlength");
     identityInput.maxLength = 10;
@@ -562,6 +562,19 @@ function renderGuestBlocks(guestQty, prefillFirstName, prefillLastName) {
     identityInput.title = "Maximum 10 symbols.";
     identityLabel.textContent = "Identity Number";
     identityInput.inputMode = "text";
+  }
+
+  // Second name rule
+  const secondNameInput = document.getElementById(`g${idx}_secondName`);
+  const secondNameLabel = document.getElementById(`g${idx}_secondNameLabel`);
+
+  secondNameInput.maxLength = 150;
+  if (isBG) {
+    secondNameInput.required = true;
+    secondNameLabel.textContent = "Second name *";
+  } else {
+    secondNameInput.required = false;
+    secondNameLabel.textContent = "Second name";
   }
 }
 
