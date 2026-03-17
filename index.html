@@ -92,7 +92,7 @@
 
       <hr style="margin: 18px 0;" />
 
-      <form id="guestForm">
+      <form id="guestForm" method="post" action="#">
         <input type="hidden" name="reservationId" id="reservationIdInput" />
         <input type="hidden" name="aptName" id="aptNameInput" />
         <input type="hidden" name="guestName" id="guestNameInput" />
@@ -638,7 +638,8 @@ function syncGuestCountryFields(idx) {
 
 document.getElementById("guestForm").addEventListener("submit", async function (e) {
   e.preventDefault();
-
+console.log("submit handler works");
+  
   for (let i = 1; i <= guestQty; i += 1) {
     syncGuestCountryFields(i);
   }
