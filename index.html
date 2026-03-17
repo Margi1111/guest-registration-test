@@ -634,14 +634,12 @@ function syncGuestCountryFields(idx) {
 
     renderGuestBlocks(guestQty, guestName, guestLastName);
 
-   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby7vrBImkVt7snwfJm7bv-yLFER7cOzJl4pAyHmrQ4dO9WWHQt6EPq4CoSuCa0Qg2yIPw/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby7vrBImkVt7snwfJm7bv-yLFER7cOzJl4pAyHmrQ4dO9WWHQt6EPq4CoSuCa0Qg2yIPw/exec";
 
 document.getElementById("guestForm").addEventListener("submit", async function (e) {
   e.preventDefault();
   console.log("submit handler works");
-  
-  
-  
+
   for (let i = 1; i <= guestQty; i += 1) {
     syncGuestCountryFields(i);
   }
@@ -654,28 +652,36 @@ document.getElementById("guestForm").addEventListener("submit", async function (
       body: formData
     });
 
-    const data = await res.json();
+    const raw = await res.text();
+    console.log("Server raw response:", raw);
+
+    let data;
+    try {
+      data = JSON.parse(raw);
+    } catch {
+      alert("Server returned non-JSON response. Check Apps Script deployment.");
+      return;
+    }
 
     if (data.status === "ok") {
-  // hide form after successful submission of
-  this. style.display = "none";
+      this.style.display = "none";
 
-  // show success message
-  const msg = document.createElement("div");
-  msg.id = "successMessage";
-  msg. style.marginTop = "14px";
-  msg. style.padding = "12px";
-  msg. style.border = "1px solid #bbf7d0";
-  msg. style.background = "#f0fdf4";
-  msg. style.color = "#166534";
-  msg. style.borderRadius = "8px";
-  msg. style.fontWeight = "600";
-  msg.textContent = "Thank you! Registration submitted successfully."
-  this.parentNode.appendChild(msg);
-} else {
+      const msg = document.createElement("div");
+      msg.id = "successMessage";
+      msg. style.marginTop = "14px";
+      msg. style.padding = "12px";
+      msg. style.border = "1px solid #bbf7d0";
+      msg. style.background = "#f0fdf4";
+      msg. style.color = "#166534";
+      msg. style.borderRadius = "8px";
+      msg. style.fontWeight = "600";
+      msg.textContent = "Thank you! Registration submitted successfully.";
+      this.parentNode.appendChild(msg);
+    } else {
       alert("Submission error: " + (data.message || "Unknown error"));
     }
   } catch (error) {
+    console.error(error);
     alert("Network error. Please try again.");
   }
 });
