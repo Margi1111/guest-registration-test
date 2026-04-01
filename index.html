@@ -626,11 +626,11 @@ button[disabled] {
 
       throw new Error(data.message || "Unknown error");
     } catch (error) {
-      alert("Submission error: " + (error && error. message ? error.message: "Network error"));
-      isSubmitting = false;
-      submitBtn.disabled = false;
-      submitBtn.innerHTML = originalBtnHtml;
-    }
+  alert("Submission error: " + (error && error.message ? error.message : "Network error"));
+  isSubmitting = false;
+  submitBtn.disabled = false;
+  submitBtn.innerHTML = originalBtnHtml;
+}
   });
 </script>
 </body>
