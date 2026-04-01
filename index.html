@@ -60,6 +60,27 @@
       text-decoration: none;
       margin: 8px 0 10px;
     }
+button[disabled] {
+  opacity: 0.75;
+  cursor: not-allowed;
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.45);
+  border-top-color: #fff;
+  border-radius: 50%;
+  display: inline-block;
+  vertical-align: middle;
+  animation: spin 0.8s linear infinite;
+  margin-right: 8px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+    
     fieldset {
       border: 1px solid #e5e7eb;
       border-radius: 10px;
@@ -367,324 +388,250 @@
     <option value="248" data-country-code="XK">Kosovo</option>
   </select>
 
-  <script>
-    function toIsoWithCurrentYear(raw) {
-      if (!raw) return "";
-      const parts = raw.split(", ");
-      if (parts.length < 2) return raw;
-      const monthDay = parts[1].trim();
-      const tokens = monthDay.split(" ");
-      const monthName = tokens[0];
-      const day = parseInt(tokens[1], 10);
+ <script>
+  function toIsoWithCurrentYear(raw) {
+    if (!raw) return "";
+    const parts = raw.split(", ");
+    if (parts.length < 2) return raw;
 
-      const monthMap = {
-        January: 1, February: 2, March: 3, April: 4, May: 5, June: 6,
-        July: 7, August: 8, September: 9, October: 10, November: 11, December: 12
-      };
+    const monthDay = parts[1].trim();
+    const tokens = monthDay.split(" ");
+    const monthName = tokens[0];
+    const day = parseInt(tokens[1], 10);
 
-      const month = monthMap[monthName];
-      if (!month || Number.isNaN(day)) return raw;
+    const monthMap = {
+      January: 1, February: 2, March: 3, April: 4, May: 5, June: 6,
+      July: 7, August: 8, September: 9, October: 10, November: 11, December: 12
+    };
 
-      const year = new Date().getFullYear();
-      return year + "-" + String(month).padStart(2, "0") + "-" + String(day).padStart(2, "0");
-    }
+    const month = monthMap[monthName];
+    if (!month || Number.isNaN(day)) return raw;
 
-    function clamp(n, min, max) {
-      return Math.max(min, Math.min(max, n));
-    }
-
-    function makeGuestBlock(idx, prefillFirstName, prefillLastName, countryOptionsHtml) {
-      const first = idx === 1 ? (prefillFirstName || "") : "";
-      const last = idx === 1 ? (prefillLastName || "") : "";
-
-      return `
-        <fieldset>
-          <legend>Guest ${idx}</legend>
-
-          <label for="g${idx}_firstName">First name *</label>
-          <input id="g${idx}_firstName" name="g${idx}_firstName" required maxlength="150" value="${first}" />
-
-          <label id="g${idx}_secondNameLabel" for="g${idx}_secondName">Second name</label>
-          <input id="g${idx}_secondName" name="g${idx}_secondName" maxlength="150" />
-
-          <label for="g${idx}_lastName">Last name *</label>
-          <input id="g${idx}_lastName" name="g${idx}_lastName" required maxlength="150" value="${last}" />
-
-          <label for="g${idx}_gender">Gender *</label>
-          <select id="g${idx}_gender" name="g${idx}_gender" required>
-            <option value="">Select...</option>
-            <option value="M">Male</option>
-            <option value="F">Female</option>
-          </select>
-
-          <label for="g${idx}_birthDate">Date of birth *</label>
-          <input id="g${idx}_birthDate" type="date" name="g${idx}_birthDate" required />
-
-      
-         <label id="g${idx}_identityLabel" for="g${idx}_identificationNumber">Identity Number</label>
-<input
-  id="g${idx}_identificationNumber"
-  name="g${idx}_identificationNumber"
-  maxlength="10"
-  title="Identity Number: for Bulgaria- 10 symbols; for other countries- not required."
-/>
-
-          <label for="g${idx}_documentNumber">Document number *</label>
-          <input
-  id="g${idx}_documentNumber"
-  name="g${idx}_documentNumber"
-  required
-  maxlength="20"
-/>
-
-          <label for="g${idx}_documentType">Document type *</label>
-          <select id="g${idx}_documentType" name="g${idx}_documentType" required>
-            <option value="">Select...</option>
-            <option value="ICA">ID card</option>
-            <option value="PAS">Passport</option>
-            <option value="DRL">Driver license</option>
-          </select>
-
-          <label for="g${idx}_documentIssueCountryId">Document issue country *</label>
-          <select id="g${idx}_documentIssueCountryId" name="g${idx}_documentIssueCountryId" required>
-            ${countryOptionsHtml}
-          </select>
-
-          <input type="hidden" id="g${idx}_documentIssueCountryCode" name="g${idx}_documentIssueCountryCode" />
-          <input type="hidden" id="g${idx}_documentIssueCountryName" name="g${idx}_documentIssueCountryName" />
-        </fieldset>
-      `;
-    }
-
- function makeGuestBlock(idx, prefillFirstName, prefillLastName, countryOptionsHtml) {
-  const first = idx === 1 ? (prefillFirstName || "") : "";
-  const last = idx === 1 ? (prefillLastName || "") : "";
-
-  return `
-    <fieldset>
-      <legend>Guest ${idx}</legend>
-
-     <label for="g${idx}_firstName">First name *</label>
-<input
-  id="g${idx}_firstName"
-  name="g${idx}_firstName"
-  required
-  maxlength="150"
-  value="${first}"
-/>
-
-<label id="g${idx}_secondNameLabel" for="g${idx}_secondName">Second name</label>
-<input
-  id="g${idx}_secondName"
-  name="g${idx}_secondName"
-  maxlength="150"
-/>
-
-<label for="g${idx}_lastName">Last name *</label>
-<input
-  id="g${idx}_lastName"
-  name="g${idx}_lastName"
-  required
-  maxlength="150"
-  value="${last}"
-/>
-
-      <label for="g${idx}_gender">Gender *</label>
-      <select id="g${idx}_gender" name="g${idx}_gender" required>
-        <option value="">Select...</option>
-        <option value="M">Male</option>
-        <option value="F">Female</option>
-      </select>
-
-      <label for="g${idx}_birthDate">Date of birth *</label>
-      <input id="g${idx}_birthDate" type="date" name="g${idx}_birthDate" required />
-
-      <label id="g${idx}_identityLabel" for="g${idx}_identificationNumber">Identity Number</label>
-      <input
-        id="g${idx}_identificationNumber"
-        name="g${idx}_identificationNumber"
-        maxlength="10"
-        title="Identity Number: for Bulgaria - 10 symbols; for other countries - not required."
-      />
-
-      <label for="g${idx}_documentNumber">Document number *</label>
-      <input id="g${idx}_documentNumber" name="g${idx}_documentNumber" required maxlength="20" />
-
-      <label for="g${idx}_documentType">Document type *</label>
-      <select id="g${idx}_documentType" name="g${idx}_documentType" required>
-        <option value="">Select...</option>
-        <option value="ICA">ID card</option>
-        <option value="PAS">Passport</option>
-        <option value="DRL">Driver license</option>
-      </select>
-
-      <label for="g${idx}_documentIssueCountryId">Document issue country *</label>
-      <select id="g${idx}_documentIssueCountryId" name="g${idx}_documentIssueCountryId" required>
-        ${countryOptionsHtml}
-      </select>
-
-      <input type="hidden" id="g${idx}_documentIssueCountryCode" name="g${idx}_documentIssueCountryCode" />
-      <input type="hidden" id="g${idx}_documentIssueCountryName" name="g${idx}_documentIssueCountryName" />
-    </fieldset>
-  `;
-}
-
-function renderGuestBlocks(guestQty, prefillFirstName, prefillLastName) {
-  const container = document.getElementById("guestBlocksContainer");
-  const countryOptionsHtml = document.getElementById("countryOptionsTemplate").innerHTML;
-
-  let html = "";
-  for (let i = 1; i <= guestQty; i += 1) {
-    html += makeGuestBlock(i, prefillFirstName, prefillLastName, countryOptionsHtml);
+    const year = new Date().getFullYear();
+    return year + "-" + String(month).padStart(2, "0") + "-" + String(day).padStart(2, "0");
   }
-  container.innerHTML = html;
 
-  for (let i = 1; i <= guestQty; i += 1) {
-    const sel = document.getElementById(`g${i}_documentIssueCountryId`);
-    sel.addEventListener("change", function () { syncGuestCountryFields(i); });
-    syncGuestCountryFields(i);
+  function clamp(n, min, max) {
+    return Math.max(min, Math.min(max, n));
   }
-}
- 
-    
-function syncGuestCountryFields(idx) {
-  const select = document.getElementById(`g${idx}_documentIssueCountryId`);
-  if (!select) return;
 
-  const selected = select.options[select.selectedIndex];
-  const code = selected ? (selected.dataset.countryCode || "") : "";
-  const name = selected && selected.value !== "" ? selected.textContent.trim() : "";
+  function makeGuestBlock(idx, prefillFirstName, prefillLastName, countryOptionsHtml) {
+    const first = idx === 1 ? (prefillFirstName || "") : "";
+    const last = idx === 1 ? (prefillLastName || "") : "";
 
-  const codeInput = document.getElementById(`g${idx}_documentIssueCountryCode`);
-  const nameInput = document.getElementById(`g${idx}_documentIssueCountryName`);
-  if (codeInput) codeInput.value = code;
-  if (nameInput) nameInput.value = name;
+    return `
+      <fieldset>
+        <legend>Guest ${idx}</legend>
 
-  const isBG = code === "BG";
+        <label for="g${idx}_firstName">First name *</label>
+        <input id="g${idx}_firstName" name="g${idx}_firstName" required maxlength="150" value="${first}" />
 
-  // Identity Number rule
-  const identityInput = document.getElementById(`g${idx}_identificationNumber`);
-  const identityLabel = document.getElementById(`g${idx}_identityLabel`);
+        <label id="g${idx}_secondNameLabel" for="g${idx}_secondName">Second name</label>
+        <input id="g${idx}_secondName" name="g${idx}_secondName" maxlength="150" />
 
-  if (identityInput) {
-    if (isBG) {
-      // Bulgaria: required, exactly 10, digits only
-      identityInput.required = true;
-      identityInput.minLength = 10;
-      identityInput.maxLength = 10;
-      identityInput.pattern = "[0-9]{10}";
-      identityInput.title = "For Bulgaria, Identity Number must be exactly 10 digits.";
-      identityInput.inputMode = "numeric";
-    } else {
-      // Other countries: optional, max 10
-      identityInput.required = false;
-      identityInput.removeAttribute("minlength");
-      identityInput.maxLength = 10;
-      identityInput.removeAttribute("pattern");
-      identityInput.title = "Maximum 10 symbols.";
-      identityInput.inputMode = "text";
+        <label for="g${idx}_lastName">Last name *</label>
+        <input id="g${idx}_lastName" name="g${idx}_lastName" required maxlength="150" value="${last}" />
+
+        <label for="g${idx}_gender">Gender *</label>
+        <select id="g${idx}_gender" name="g${idx}_gender" required>
+          <option value="">Select...</option>
+          <option value="M">Male</option>
+          <option value="F">Female</option>
+        </select>
+
+        <label for="g${idx}_birthDate">Date of birth *</label>
+        <input id="g${idx}_birthDate" type="date" name="g${idx}_birthDate" required />
+
+        <label id="g${idx}_identityLabel" for="g${idx}_identificationNumber">Identity Number</label>
+        <input
+          id="g${idx}_identificationNumber"
+          name="g${idx}_identificationNumber"
+          maxlength="10"
+          title="Identity Number: for Bulgaria - 10 symbols; for other countries - not required."
+        />
+
+        <label for="g${idx}_documentNumber">Document number *</label>
+        <input id="g${idx}_documentNumber" name="g${idx}_documentNumber" required maxlength="20" />
+
+        <label for="g${idx}_documentType">Document type *</label>
+        <select id="g${idx}_documentType" name="g${idx}_documentType" required>
+          <option value="">Select...</option>
+          <option value="ICA">ID card</option>
+          <option value="PAS">Passport</option>
+          <option value="DRL">Driver license</option>
+        </select>
+
+        <label for="g${idx}_documentIssueCountryId">Document issue country *</label>
+        <select id="g${idx}_documentIssueCountryId" name="g${idx}_documentIssueCountryId" required>
+          ${countryOptionsHtml}
+        </select>
+
+        <input type="hidden" id="g${idx}_documentIssueCountryCode" name="g${idx}_documentIssueCountryCode" />
+        <input type="hidden" id="g${idx}_documentIssueCountryName" name="g${idx}_documentIssueCountryName" />
+      </fieldset>
+    `;
+  }
+
+  function renderGuestBlocks(guestQty, prefillFirstName, prefillLastName) {
+    const container = document.getElementById("guestBlocksContainer");
+    const countryOptionsHtml = document.getElementById("countryOptionsTemplate").innerHTML;
+
+    let html = "";
+    for (let i = 1; i <= guestQty; i += 1) {
+      html += makeGuestBlock(i, prefillFirstName, prefillLastName, countryOptionsHtml);
+    }
+    container.innerHTML = html;
+
+    for (let i = 1; i <= guestQty; i += 1) {
+      const sel = document.getElementById(`g${i}_documentIssueCountryId`);
+      sel.addEventListener("change", function () { syncGuestCountryFields(i); });
+      syncGuestCountryFields(i);
     }
   }
 
-  if (identityLabel) {
-    identityLabel.textContent = isBG ? "Identity Number *": "Identity Number";
+  function syncGuestCountryFields(idx) {
+    const select = document.getElementById(`g${idx}_documentIssueCountryId`);
+    if (!select) return;
+
+    const selected = select.options[select.selectedIndex];
+    const code = selected ? (selected.dataset.countryCode || "") : "";
+    const name = selected && selected.value !== "" ? selected.textContent.trim() : "";
+
+    const codeInput = document.getElementById(`g${idx}_documentIssueCountryCode`);
+    const nameInput = document.getElementById(`g${idx}_documentIssueCountryName`);
+    if (codeInput) codeInput.value = code;
+    if (nameInput) nameInput.value = name;
+
+    const isBG = code === "BG";
+
+    const identityInput = document.getElementById(`g${idx}_identificationNumber`);
+    const identityLabel = document.getElementById(`g${idx}_identityLabel`);
+
+    if (identityInput) {
+      if (isBG) {
+        identityInput.required = true;
+        identityInput.minLength = 10;
+        identityInput.maxLength = 10;
+        identityInput.pattern = "[0-9]{10}";
+        identityInput.title = "For Bulgaria, Identity Number must be exactly 10 digits.";
+        identityInput.inputMode = "numeric";
+      } else {
+        identityInput.required = false;
+        identityInput.removeAttribute("minlength");
+        identityInput.maxLength = 10;
+        identityInput.removeAttribute("pattern");
+        identityInput.title = "Maximum 10 symbols.";
+        identityInput.inputMode = "text";
+      }
+    }
+
+    if (identityLabel) {
+      identityLabel.textContent = isBG ? "Identity Number *" : "Identity Number";
+    }
+
+    const secondNameInput = document.getElementById(`g${idx}_secondName`);
+    const secondNameLabel = document.getElementById(`g${idx}_secondNameLabel`);
+    if (secondNameInput) {
+      secondNameInput.maxLength = 150;
+      secondNameInput.required = isBG;
+    }
+    if (secondNameLabel) {
+      secondNameLabel.textContent = isBG ? "Second name *" : "Second name";
+    }
   }
 
-  // Second name rule
-  const secondNameInput = document.getElementById(`g${idx}_secondName`);
-  const secondNameLabel = document.getElementById(`g${idx}_secondNameLabel`);
+  const p = new URLSearchParams(window.location.search);
+  const aptName = p.get("aptName") || "";
+  const guestName = p.get("guestName") || "";
+  const guestLastName = p.get("guestLastName") || "";
+  const reservationId = p.get("reservationId") || "";
+  const checkin = toIsoWithCurrentYear(p.get("checkin") || "");
+  const checkout = toIsoWithCurrentYear(p.get("checkout") || "");
+  const guestQtyRaw = parseInt(p.get("guestQty") || "1", 10);
+  const guestQty = clamp(Number.isNaN(guestQtyRaw) ? 1 : guestQtyRaw, 1, 10);
 
-  if (secondNameInput) {
-    secondNameInput.maxLength = 150;
-    secondNameInput.required = isBG;
-  }
+  const fullName = [guestName, guestLastName].filter(Boolean).join(" ") || "Guest";
 
-  if (secondNameLabel) {
-    secondNameLabel.textContent = isBG ? "Second name *": "Second name";
-  }
-}
+  document.getElementById("hello").textContent = "Hello, " + fullName;
+  document.getElementById("aptNameValue").textContent = aptName || "-";
+  document.getElementById("guestValue").textContent = fullName || "-";
+  document.getElementById("checkinValue").textContent = checkin || "-";
+  document.getElementById("checkoutValue").textContent = checkout || "-";
+  document.getElementById("reservationValue").textContent = reservationId || "-";
+  document.getElementById("guestQtyValue").textContent = String(guestQty);
 
-    const p = new URLSearchParams(window.location.search);
-    const aptName = p.get("aptName") || "";
-    const guestName = p.get("guestName") || "";
-    const guestLastName = p.get("guestLastName") || "";
-    const reservationId = p.get("reservationId") || "";
-    const checkin = toIsoWithCurrentYear(p.get("checkin") || "");
-    const checkout = toIsoWithCurrentYear(p.get("checkout") || "");
-    const guestQtyRaw = parseInt(p.get("guestQty") || "1", 10);
-    const guestQty = clamp(Number.isNaN(guestQtyRaw) ? 1 : guestQtyRaw, 1, 10);
+  document.getElementById("reservationIdInput").value = reservationId;
+  document.getElementById("aptNameInput").value = aptName;
+  document.getElementById("guestNameInput").value = guestName;
+  document.getElementById("guestLastNameInput").value = guestLastName;
+  document.getElementById("checkinInput").value = checkin;
+  document.getElementById("checkoutInput").value = checkout;
+  document.getElementById("guestQtyInput").value = String(guestQty);
 
-    const fullName = [guestName, guestLastName].filter(Boolean).join(" ") || "Guest";
+  renderGuestBlocks(guestQty, guestName, guestLastName);
 
-    document.getElementById("hello").textContent = "Hello, " + fullName;
-    document.getElementById("aptNameValue").textContent = aptName || "-";
-    document.getElementById("guestValue").textContent = fullName || "-";
-    document.getElementById("checkinValue").textContent = checkin || "-";
-    document.getElementById("checkoutValue").textContent = checkout || "-";
-    document.getElementById("reservationValue").textContent = reservationId || "-";
-    document.getElementById("guestQtyValue").textContent = String(guestQty);
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby7vrBImkVt7snwfJm7bv-yLFER7cOzJl4pAyHmrQ4dO9WWHQt6EPq4CoSuCa0Qg2yIPw/exec";
 
-    document.getElementById("reservationIdInput").value = reservationId;
-    document.getElementById("aptNameInput").value = aptName;
-    document.getElementById("guestNameInput").value = guestName;
-    document.getElementById("guestLastNameInput").value = guestLastName;
-    document.getElementById("checkinInput").value = checkin;
-    document.getElementById("checkoutInput").value = checkout;
-    document.getElementById("guestQtyInput").value = String(guestQty);
+  const form = document.getElementById("guestForm");
+  const submitBtn = form.querySelector('button[type="submit"]');
+  let isSubmitting = false;
 
-    renderGuestBlocks(guestQty, guestName, guestLastName);
+  form.addEventListener("submit", async function (e) {
+    e.preventDefault();
 
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby7vrBImkVt7snwfJm7bv-yLFER7cOzJl4pAyHmrQ4dO9WWHQt6EPq4CoSuCa0Qg2yIPw/exec";
+    // Prevent duplicate submits
+    if (isSubmitting) return;
+    isSubmitting = true;
 
-document.getElementById("guestForm").addEventListener("submit", async function (e) {
-  e.preventDefault();
-  console.log("submit handler works");
+    const originalBtnHtml = submitBtn.innerHTML;
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<span class="spinner" aria-hidden="true"></span>Submitting...';
 
-  for (let i = 1; i <= guestQty; i += 1) {
-    syncGuestCountryFields(i);
-  }
+    for (let i = 1; i <= guestQty; i += 1) {
+      syncGuestCountryFields(i);
+    }
 
-  const formData = new FormData(this);
+    const formData = new FormData(this);
 
-  try {
-    const res = await fetch(SCRIPT_URL, {
-      method: "POST",
-      body: formData
-    });
-
-    const raw = await res.text();
-    console.log("Server raw response:", raw);
-
-    let data;
     try {
-      data = JSON.parse(raw);
-    } catch {
-      alert("Server returned non-JSON response. Check Apps Script deployment.");
-      return;
-    }
+      const res = await fetch(SCRIPT_URL, {
+        method: "POST",
+        body: formData
+      });
 
-    if (data.status === "ok") {
-      this.style.display = "none";
+      const raw = await res.text();
+      let data;
+      try {
+        data = JSON.parse(raw);
+      } catch {
+        throw new Error("Server returned non-JSON response");
+      }
 
-      const msg = document.createElement("div");
-      msg.id = "successMessage";
-      msg. style.marginTop = "14px";
-      msg. style.padding = "12px";
-      msg. style.border = "1px solid #bbf7d0";
-      msg. style.background = "#f0fdf4";
-      msg. style.color = "#166534";
-      msg. style.borderRadius = "8px";
-      msg. style.fontWeight = "600";
-      msg.textContent = "Thank you! Registration submitted successfully.";
-      this.parentNode.appendChild(msg);
-    } else {
-      alert("Submission error: " + (data.message || "Unknown error"));
+      if (data.status === "ok") {
+        this.style.display = "none";
+
+        const msg = document.createElement("div");
+        msg.id = "successMessage";
+        msg. style.marginTop = "14px";
+        msg. style.padding = "12px";
+        msg. style.border = "1px solid #bbf7d0";
+        msg. style.background = "#f0fdf4";
+        msg. style.color = "#166534";
+        msg. style.borderRadius = "8px";
+        msg. style.fontWeight = "600";
+        msg.textContent = "Thank you! Registration submitted successfully.";
+        this.parentNode.appendChild(msg);
+        return;
+      }
+
+      throw new Error(data.message || "Unknown error");
+    } catch (error) {
+      alert("Submission error: " + (error && error. message ? error.message: "Network error"));
+      isSubmitting = false;
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = originalBtnHtml;
     }
-  } catch (error) {
-    console.error(error);
-    alert("Network error. Please try again.");
-  }
-});
-  </script>
+  });
+</script>
 </body>
 </html>
